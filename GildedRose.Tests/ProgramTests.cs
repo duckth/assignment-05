@@ -16,24 +16,24 @@ public class ProgramTests
         app = new Program();
         app.Items = new List<Item>
         {
-            new Item { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20 },
-            new Item { Name = "Aged Brie", SellIn = 2, Quality = 0 },
-            new Item { Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7 },
-            new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80 },
-            new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80 },
-            new Item
+            new GenericItem { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20 },
+            new AgedBrieItem { Name = "Aged Brie", SellIn = 2, Quality = 0 },
+            new GenericItem { Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7 },
+            new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80 },
+            new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80 },
+            new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 15,
                         Quality = 20
                     },
-                    new Item
+                    new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 10,
                         Quality = 49
                     },
-                    new Item
+                    new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 5,
@@ -45,24 +45,24 @@ public class ProgramTests
         // setup expected items
         var expectedItems = new List<Item>
         {
-            new Item { Name = "+5 Dexterity Vest", SellIn = 9, Quality = 19},
-            new Item { Name = "Aged Brie", SellIn = 1, Quality = 1},
-            new Item { Name = "Elixir of the Mongoose", SellIn = 4, Quality = 6},
-            new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80},
-            new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80},
-            new Item
+            new GenericItem { Name = "+5 Dexterity Vest", SellIn = 9, Quality = 19},
+            new AgedBrieItem { Name = "Aged Brie", SellIn = 1, Quality = 1},
+            new GenericItem { Name = "Elixir of the Mongoose", SellIn = 4, Quality = 6},
+            new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80},
+            new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80},
+            new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 14,
                         Quality = 21
                     },
-                    new Item
+                    new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 9,
                         Quality = 50
                     },
-                    new Item
+                    new TicketItem
                     {
                         Name = "Backstage passes to a TAFKAL80ETC concert",
                         SellIn = 4,
@@ -82,7 +82,7 @@ public class ProgramTests
     public void Test_aged_brie_sellin_less_than_0()
     {
         // Arrange
-        var item = new Item { Name = "Aged Brie", SellIn = -5, Quality = 2 };
+        var item = new AgedBrieItem { Name = "Aged Brie", SellIn = -5, Quality = 2 };
         app.Items.Add(item);
 
         // Act
@@ -95,7 +95,7 @@ public class ProgramTests
     [Fact]
     public void Test_quality_degrades_faster_if_sellin_value_negative()
     {
-        var degradingItem = new Item
+        var degradingItem = new GenericItem
         {
             Name = "+50 Dexterity Vest",
             SellIn = 10,
@@ -105,10 +105,7 @@ public class ProgramTests
         app.Items.Add(degradingItem);
         var expectedQuality = 20;
 
-        for (int i = 0; i < 20; i++)
-        {
-            app.UpdateQuality();
-        }
+        20.Times(() => app.UpdateQuality());
 
         degradingItem.Quality.Should().Be(expectedQuality);
     }
@@ -117,7 +114,7 @@ public class ProgramTests
     public void Item_with_quality_zero_is_not_negative_after_update()
     {
         // Arrange
-        var item = new Item { Name = "quality zero", SellIn = 5, Quality = 0 };
+        var item = new GenericItem { Name = "quality zero", SellIn = 5, Quality = 0 };
         app.Items.Add(item);
 
         // Act
@@ -130,7 +127,7 @@ public class ProgramTests
     [Fact]
     public void Test_aged_brie_increases_in_quality()
     {
-        var item = new Item
+        var item = new AgedBrieItem
         {
             Name = "Aged Brie",
             SellIn = 5,
@@ -147,7 +144,7 @@ public class ProgramTests
     [Fact]
     public void Test_Sulfuras_no_change()
     {
-        var item = new Item
+        var item = new LegendaryItem
         {
             Name = "Sulfuras, Hand of Ragnaros",
             SellIn = 5,
@@ -164,7 +161,7 @@ public class ProgramTests
     [Fact]
     public void Test_backstage_pass_quality_increases_by_2_if_sellin_le_10()
     {
-        var item = new Item
+        var item = new TicketItem
         {
             Name = "Backstage passes to a TAFKAL80ETC concert",
             SellIn = 10,
@@ -179,7 +176,7 @@ public class ProgramTests
     [Fact]
     public void Test_backstage_pass_quality_increases_by_3_if_sellin_le_5()
     {
-        var item = new Item
+        var item = new TicketItem
         {
             Name = "Backstage passes to a TAFKAL80ETC concert",
             SellIn = 5,
@@ -194,7 +191,7 @@ public class ProgramTests
     [Fact]
     public void Test_backstage_pass_quality_zero_if_sellin_negative()
     {
-        var item = new Item
+        var item = new TicketItem
         {
             Name = "Backstage passes to a TAFKAL80ETC concert",
             SellIn = 0,
@@ -210,7 +207,7 @@ public class ProgramTests
     public void Item_increasing_in_quality_with_quality_50_does_not_exceed_50_after_update()
     {
         // Arrange
-        var item = new Item { Name = "Aged Brie", SellIn = 5, Quality = 50 };
+        var item = new AgedBrieItem { Name = "Aged Brie", SellIn = 5, Quality = 50 };
         app.Items.Add(item);
 
         // Act
@@ -220,15 +217,35 @@ public class ProgramTests
         item.Quality.Should().BeLessThanOrEqualTo(50);
     }
 
-    [Fact]
-    public void Test_test()
-    {
-        var item = new Item { Name = "Aged Brie", SellIn = 5, Quality = 51 };
-        app.Items.Add(item);
+    // [Fact]
+    // public void Test_test()
+    // {
+    //     var item = new Item { Name = "Aged Brie", SellIn = 5, Quality = 51 };
+    //     app.Items.Add(item);
 
-        // Act
-        app.UpdateQuality();
-        true.Should().Be(true);
+    //     // Act
+    //     app.UpdateQuality();
+    //     true.Should().Be(true);
+    // }
+
+    [Fact]
+    public void Test_generic_item_update()
+    {
+        var generic = new GenericItem { SellIn = 10, Quality = 10 };
+
+        5.Times(() => generic.UpdateQuality());
+
+        generic.Quality.Should().Be(5);
+    }
+
+    [Fact]
+    public void Test_generic_item_update_when_past_sellin()
+    {
+        var generic = new GenericItem { SellIn = 10, Quality = 10 };
+
+        20.Times(() => generic.UpdateQuality());
+
+        generic.Quality.Should().Be(-10);
     }
 
     //[Fact]
