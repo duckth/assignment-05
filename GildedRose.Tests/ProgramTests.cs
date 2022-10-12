@@ -248,22 +248,22 @@ public class ProgramTests
         generic.Quality.Should().Be(-10);
     }
 
-    //[Fact]
-    //public void Test_conjured_degrade_faster()
-    //{
-    //    var item = new Item
-    //    {
-    //        Name = "Conjured Mana Cake",
-    //        SellIn = 5,
-    //        Quality = 40,
-    //    };
+    [Fact]
+    public void Test_conjured_degrade_faster()
+    {
+        var item = new ConjuredItem
+        {
+            Name = "Conjured Mana Cake",
+            SellIn = 5,
+            Quality = 40,
+        };
 
-    //    app.Items.Add(item);
-    //    app.UpdateQuality();
+        app.Items.Add(item);
+        app.UpdateQuality();
 
-    //    item.Quality.Should().Be(38);
-    //    item.SellIn.Should().Be(4);
-    //}
+        item.Quality.Should().Be(38);
+        item.SellIn.Should().Be(4);
+    }
 
     // [Fact]
     // public void Test_UpdateQuality_thirty_times()
