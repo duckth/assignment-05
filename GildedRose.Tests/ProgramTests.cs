@@ -11,14 +11,20 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Test_main()
+    {
+        Program.Main(new string[0]);
+    }
+
+    [Fact]
     public void Test_UpdateQuality_one_time()
     {
         app = new Program();
         app.Items = new List<Item>
         {
-            new GenericItem { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20 },
+            new Item { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20 },
             new AgedBrieItem { Name = "Aged Brie", SellIn = 2, Quality = 0 },
-            new GenericItem { Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7 },
+            new Item { Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7 },
             new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80 },
             new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80 },
             new TicketItem
@@ -45,9 +51,9 @@ public class ProgramTests
         // setup expected items
         var expectedItems = new List<Item>
         {
-            new GenericItem { Name = "+5 Dexterity Vest", SellIn = 9, Quality = 19},
+            new Item { Name = "+5 Dexterity Vest", SellIn = 9, Quality = 19},
             new AgedBrieItem { Name = "Aged Brie", SellIn = 1, Quality = 1},
-            new GenericItem { Name = "Elixir of the Mongoose", SellIn = 4, Quality = 6},
+            new Item { Name = "Elixir of the Mongoose", SellIn = 4, Quality = 6},
             new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80},
             new LegendaryItem { Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80},
             new TicketItem
@@ -95,7 +101,7 @@ public class ProgramTests
     [Fact]
     public void Test_quality_degrades_faster_if_sellin_value_negative()
     {
-        var degradingItem = new GenericItem
+        var degradingItem = new Item
         {
             Name = "+50 Dexterity Vest",
             SellIn = 10,
@@ -114,7 +120,7 @@ public class ProgramTests
     public void Item_with_quality_zero_is_not_negative_after_update()
     {
         // Arrange
-        var item = new GenericItem { Name = "quality zero", SellIn = 5, Quality = 0 };
+        var item = new Item { Name = "quality zero", SellIn = 5, Quality = 0 };
         app.Items.Add(item);
 
         // Act
@@ -231,7 +237,7 @@ public class ProgramTests
     [Fact]
     public void Test_generic_item_update()
     {
-        var generic = new GenericItem { SellIn = 10, Quality = 10 };
+        var generic = new Item { SellIn = 10, Quality = 10 };
 
         5.Times(() => generic.UpdateQuality());
 
@@ -241,7 +247,7 @@ public class ProgramTests
     [Fact]
     public void Test_generic_item_update_when_past_sellin()
     {
-        var generic = new GenericItem { SellIn = 10, Quality = 10 };
+        var generic = new Item { SellIn = 10, Quality = 10 };
 
         20.Times(() => generic.UpdateQuality());
 
@@ -263,6 +269,36 @@ public class ProgramTests
 
         item.Quality.Should().Be(38);
         item.SellIn.Should().Be(4);
+    }
+
+    [Fact]
+    public void Test_conjured_degrade_double_if_past_sellin()
+    {
+        var item = new ConjuredItem
+        {
+            Name = "Conjured Mana Cake",
+            SellIn = -1,
+            Quality = 40,
+        };
+
+        app.Items.Add(item);
+        app.UpdateQuality();
+
+        item.Quality.Should().Be(36);
+    }
+
+    [Fact]
+    public void Test_legendary_item_does_not_update()
+    {
+        var item = new LegendaryItem
+        {
+            SellIn = -1,
+            Quality = 80,
+        };
+
+        item.UpdateQuality();
+
+        item.Quality.Should().Be(80);
     }
 
     // [Fact]
