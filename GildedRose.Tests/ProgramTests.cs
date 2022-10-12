@@ -5,9 +5,11 @@ namespace GildedRose.Tests;
 public class ProgramTests
 {
     Program app;
+    IRuleset ruleset;
 
     public ProgramTests()
     {
+        ruleset = new GenericRuleset();
         app = new Program();
         app.Items = new List<Item>();
     }
@@ -73,7 +75,7 @@ public class ProgramTests
         };
 
         // run updatequality
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         // assert items have correct values
         app.Items.Should().BeEquivalentTo(expectedItems);
@@ -88,7 +90,7 @@ public class ProgramTests
         app.Items.Add(item);
 
         // Act
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         // Assert
         item.Quality.Should().Be(4);
@@ -109,7 +111,7 @@ public class ProgramTests
 
         for (int i = 0; i < 20; i++)
         {
-            app.UpdateQuality();
+            app.UpdateQuality(ruleset);
         }
 
         degradingItem.Quality.Should().Be(expectedQuality);
@@ -123,7 +125,7 @@ public class ProgramTests
         app.Items.Add(item);
 
         // Act
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         // Assert
         item.Quality.Should().Be(0);
@@ -140,7 +142,7 @@ public class ProgramTests
         };
 
         app.Items.Add(item);
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         item.Quality.Should().Be(6);
         item.SellIn.Should().Be(4);
@@ -157,7 +159,7 @@ public class ProgramTests
         };
 
         app.Items.Add(item);
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         item.Quality.Should().Be(80);
         item.SellIn.Should().Be(5);
@@ -174,7 +176,7 @@ public class ProgramTests
         };
         app.Items.Add(item);
 
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
         item.Quality.Should().Be(12);
     }
 
@@ -189,7 +191,7 @@ public class ProgramTests
         };
 
         app.Items.Add(item);
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
         item.Quality.Should().Be(13);
     }
 
@@ -204,7 +206,7 @@ public class ProgramTests
         };
 
         app.Items.Add(item);
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
         item.Quality.Should().Be(0);
     }
 
@@ -216,7 +218,7 @@ public class ProgramTests
         app.Items.Add(item);
 
         // Act
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
 
         // Assert
         item.Quality.Should().BeLessThanOrEqualTo(50);
@@ -229,7 +231,7 @@ public class ProgramTests
         app.Items.Add(item);
 
         // Act
-        app.UpdateQuality();
+        app.UpdateQuality(ruleset);
         true.Should().Be(true);
     }
 
@@ -244,7 +246,7 @@ public class ProgramTests
     //    };
 
     //    app.Items.Add(item);
-    //    app.UpdateQuality();
+    //    app.UpdateQuality(ruleset);
 
     //    item.Quality.Should().Be(38);
     //    item.SellIn.Should().Be(4);
@@ -295,7 +297,7 @@ public class ProgramTests
     //   // Conjured Mana Cake, -27, 0
 
     //   // run updatequality
-    //   for (int i = 0; i < 31; i++) app.UpdateQuality();
+    //   for (int i = 0; i < 31; i++) app.UpdateQuality(ruleset);
 
     //   // assert items have correct values
     //   app.Items.Should().BeEquivalentTo(expectedItems);
